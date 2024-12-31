@@ -6,12 +6,12 @@ const Cards = () => {
   const [inputVal, setInputVal] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const pockemonApi = "https://pokeapi.co/api/v2/pokemon?limit=250";
+  const pockemonApi = "https://pokeapi.co/api/v2/pokemon?limit=200";
 
   const getDatafromApi = async () => {
     try {
-      const apiData = await fetch(pockemonApi); // Fetch the API
-      const dataApi = await apiData.json(); // Parse the response to JSON
+      const apiData = await fetch(pockemonApi);
+      const dataApi = await apiData.json();
       const pockemonData = dataApi.results;
       const finData = pockemonData.map(async (val) => {
         const dataofApi = await fetch(val.url);
@@ -22,16 +22,12 @@ const Cards = () => {
       setPockemon(detailedResponses);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error); // Handle potential errors
+      console.error("Error fetching data:", error);
       setLoading(false);
     }
   };
 
-  // console.log(pockemon);
-
-  // serach functionality
-
-  let filterData = pockemon.filter((value) =>
+  const filterData = pockemon.filter((value) =>
     value.name.toLowerCase().includes(inputVal.toLowerCase())
   );
 
@@ -41,30 +37,41 @@ const Cards = () => {
 
   if (loading) {
     return (
-      <div className="loader-container">
-        <div className="spinner"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-100">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-[100%] flex items-start justify-center bg-[#f0f3ff]">
-      <div>
-        <div className="w-full flex justify-start items-center flex-col gap-3">
-          <h1 className="text-2xl font-semibold">Lets Catch Pokemon</h1>
-          <input
-            value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
-            type="text"
-            placeholder="Search pokemon"
-            className="px-2 py-0.5 focus:outline-none border-b-2 border-b-blue-800"
-          />
-        </div>
-        <ul className="flex flex-wrap items-start justify-center">
-          {filterData.map((val) => {
-            console.log(val);
-            return <CardsItem key={val.id} value={val} />;
-          })}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+      {/* Header Section */}
+      <div className="text-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 tracking-wide mb-1">
+          Pokémon Finder
+        </h1>
+        <p className="text-sm text-gray-600">
+          Search and explore Pokémon stats.
+        </p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="flex justify-center mb-6">
+        <input
+          value={inputVal}
+          onChange={(e) => setInputVal(e.target.value)}
+          type="text"
+          placeholder="Search Pokémon..."
+          className="w-full max-w-md px-4 py-2 border border-blue-400 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-300 text-gray-700 text-sm"
+        />
+      </div>
+
+      {/* Cards Grid */}
+      <div className="flex items-center justify-center">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center w-[95%] max-w-screen-xl mx-auto">
+          {filterData.map((val) => (
+            <CardsItem key={val.id} value={val} />
+          ))}
         </ul>
       </div>
     </div>
